@@ -1,0 +1,33 @@
+#!/usr/bin/env python
+
+import shutil
+
+def main() -> None:
+    term_width = shutil.get_terminal_size().columns or 80
+    
+    # Generate green-to-black gradient treating each char as 2 pixels
+    gradient = []
+    total_pixels = term_width * 2  # Each character = 2 pixels
+    
+    for char in range(term_width):
+        # Calculate pixel positions within this character
+        left_pixel = char * 2        # Left half pixel
+        right_pixel = char * 2 + 1   # Right half pixel
+        
+        # Linear interpolation from green (#00ff00) to black (#000000)
+        left_green = int(255 * (1 - left_pixel / total_pixels))
+        right_green = int(255 * (1 - right_pixel / total_pixels))
+        
+        # RGB values (R=0, G=gradient, B=0)
+        r, g, b = 0, left_green, 0
+        br, bg, bb = 0, right_green, 0
+        
+        # Half-block with green-to-black colors
+        block = f"\x1b[38;2;{r};{g};{b}m\x1b[48;2;{br};{bg};{bb}m▌\x1b[0m"
+        gradient.append(block)
+    
+    # Print the gradient
+    print("".join(gradient))
+
+if __name__ == "__main__":
+    main()
